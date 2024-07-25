@@ -13,13 +13,17 @@ jugador(blanco).
 ubicadoEn(argentina, americaDelSur).
 ubicadoEn(brasil, americaDelSur).
 ubicadoEn(colombia, americaDelSur).
+ubicadoEn(peru, americaDelSur).
+ubicadoEn(uruguay, americaDelSur).
 ubicadoEn(italia, europa).
 ubicadoEn(portugal, europa).
 ubicadoEn(grecia, europa).
 ubicadoEn(alemania, europa).
 ubicadoEn(holanda, europa).
+ubicadoEn(belgica, europa).
 ubicadoEn(china, asia).
 ubicadoEn(japon, asia).
+ubicadoEn(corea, asia).
 ubicadoEn(australia, oceania).
 
 
@@ -38,6 +42,7 @@ aliados(verde, azul).
 ocupa(rojo, argentina).
 ocupa(rojo, colombia).
 ocupa(rojo, china).
+ocupa(rojo, belgica).
 ocupa(azul, italia).
 ocupa(azul, japon).
 ocupa(amarillo, portugal).
@@ -46,6 +51,8 @@ ocupa(amarillo, australia).
 ocupa(verde, grecia).
 ocupa(verde, alemania).
 ocupa(verde, holanda).
+ocupa(blanco, uruguay).
+ocupa(blanco, peru).
 
 
 % Relaciona dos países si son limítrofes.
@@ -77,5 +84,24 @@ perdio(Jugador):-
     jugador(Jugador),
     not(ocupa(Jugador, _)).
 
+controla(Jugador, Continente):-
+    jugador(Jugador), ubicadoEn(_, Continente),
+    forall(ubicadoEn(Pais, Continente), ocupa(Jugador, Pais)).
 
-    
+renido(Continente):-
+    ubicadoEn(_, Continente),
+    forall((jugador(Jugador), not(perdio(Jugador))), (ocupa(Jugador, Pais), ubicadoEn(Pais, Continente))).  
+
+atrincherado(Jugador):-
+    jugador(Jugador), ubicadoEn(_, Continente),
+    forall(ocupa(Jugador, Pais), ubicadoEn(Pais, Continente)). 
+
+puedeConquistar(Jugador, Continente):-
+    not(controla(Jugador, Continente)),
+    forall((ubicadoEn(Pais, Continente), not(ocupa(Jugador, Pais))), puedeAtacar(Jugador, Pais)).
+
+puedeAtacar(Jugador, PaisAtacado):-
+    limitrofes(PaisAtacado, PaisPropio),
+    ocupa(Jugador, PaisPropio),   
+    not((aliados(Jugador, OtroJugador), ocupa(OtroJugador, PaisAtacado))).
+
