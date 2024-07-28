@@ -184,26 +184,38 @@ limitrofes(australia,chile).
 
 %% Parte A
 
+%% Punto 1
 loLiquidaron(Jugador):-
     jugador(Jugador),
     not(ocupa(_, Jugador, _)).
-
+%% Punto 2
 ocupaContinente(Jugador, Continente):-
     jugador(Jugador), continente(Continente),
     forall(estaEn(Continente, Pais), ocupa(Pais, Jugador, _)).
-
+%% Punto 3
 seAtrinchero(Jugador):-
     jugador(Jugador), continente(Continente),
     forall(ocupa(Pais, Jugador, _), estaEn(Continente, Pais)).  
 
 %% Parte B
 
+%% Punto 4
 puedeConquistar(Jugador, Continente):-
     jugador(Jugador), continente(Continente), not(ocupaContinente(Jugador, Continente)),
     forall((estaEn(Continente, Pais), not(ocupa(Pais, Jugador, _))), puedeAtacar(Jugador, Pais)).
-
 puedeAtacar(Jugador, Pais):-
     ocupa(SuPais, Jugador, _),
     sonLimitrofes(SuPais, Pais),
     ocupa(Pais, OtroJugador, _),
     not(aliados(Jugador, OtroJugador)).
+%% Punto 5
+elQueTieneMasEjercitos(Jugador, Pais):-
+    jugador(Jugador), ocupa(Pais, Jugador, Ejercito),
+    forall((ocupa(OtroPais, _, Ejercitos), Pais \= OtroPais), Ejercito > Ejercitos).
+%% Punto 6
+objetivo(amarillo, ocuparContinente(asia)).
+objetivo(amarillo,ocuparPaises(2, americaDelSur)). 
+objetivo(blanco, destruirJugador(negro)). 
+objetivo(magenta, destruirJugador(blanco)). 
+objetivo(negro, ocuparContinente(oceania)).
+objetivo(negro,ocuparContinente(americaDelSur)).
