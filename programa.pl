@@ -227,3 +227,15 @@ cumpleObjetivos(Jugador):-
     forall(objetivo(Jugador, ocuparPaises(Cantidad, Continente)),
         (continente(Continente), findall(Pais, (estaEn(Continente, Pais), ocupa(Pais, Jugador, _)), Paises),
          length(Paises, CantidadOcupados), CantidadOcupados >= Cantidad )).
+
+leInteresa(Jugador, Continente):-
+    objetivo(Jugador, Objetivo),
+    continenteObjetivo(Objetivo, Continente).
+
+continenteObjetivo(ocuparContinente(Continente), Continente).
+
+continenteObjetivo(ocuparPaises(_, Continente), Continente).
+
+continenteObjetivo(destruirJugador(Oponente), Continente):-
+    ocupa(Pais, Oponente, _), estaEn(Continente, Pais).
+
