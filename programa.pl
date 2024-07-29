@@ -190,7 +190,7 @@ loLiquidaron(Jugador):-
     not(ocupa(_, Jugador, _)).
 %% Punto 2
 ocupaContinente(Jugador, Continente):-
-    jugador(Jugador), continente(Continente),
+    jugador(Jugador), continente(Continente), 
     forall(estaEn(Continente, Pais), ocupa(Pais, Jugador, _)).
 %% Punto 3
 seAtrinchero(Jugador):-
@@ -219,3 +219,11 @@ objetivo(blanco, destruirJugador(negro)).
 objetivo(magenta, destruirJugador(blanco)). 
 objetivo(negro, ocuparContinente(oceania)).
 objetivo(negro,ocuparContinente(americaDelSur)).
+
+cumpleObjetivos(Jugador):-
+    jugador(Jugador),
+    forall(objetivo(Jugador, ocuparContinente(Continente)), ocupaContinente(Jugador, Continente)),
+    forall(objetivo(Jugador, destruirJugador(Oponente)), loLiquidaron(Oponente)),
+    forall(objetivo(Jugador, ocuparPaises(Cantidad, Continente)),
+        (continente(Continente), findall(Pais, (estaEn(Continente, Pais), ocupa(Pais, Jugador, _)), Paises),
+         length(Paises, CantidadOcupados), CantidadOcupados >= Cantidad )).
